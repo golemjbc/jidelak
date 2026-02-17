@@ -16,16 +16,16 @@
 
 <body class="bg-zinc-950 text-zinc-200 h-screen flex flex-col">
 
-<!-- LOGO -->
+<!-- LOGO menší -->
 <div class="flex justify-center bg-zinc-950">
   <img src="img/ELAI.png"
        alt="ELAI Logo"
-       class="w-full max-w-5xl object-contain" />
+       class="w-full max-w-2xl object-contain" />
 </div>
 
 <!-- HISTORIE -->
 <div id="historySection"
-     class="h-56 overflow-y-auto border-b border-zinc-800 px-4 py-3 bg-zinc-900 flex flex-col">
+     class="h-48 overflow-y-auto border-b border-zinc-800 px-4 py-3 bg-zinc-900 flex flex-col text-sm">
 </div>
 
 <!-- CHAT -->
@@ -49,9 +49,9 @@
 
 const API_BASE = "https://jidelak-bng5gggscsevacbw.westeurope-01.azurewebsites.net/api";
 
-/* ====================================
-   🔥 LOADING HLÁŠKY (mění se po 2s)
-==================================== */
+/* ================================
+   🔥 LOADING HLÁŠKY
+================================ */
 const loadingMessages = [
 "Zvyšuju tlak. Udržíš to?",
 "Teplota roste. A já to miluju.",
@@ -78,17 +78,17 @@ const loadingMessages = [
 let loadingBubble = null;
 let loadingInterval = null;
 
-/* ====================================
+/* ================================
    INIT
-==================================== */
+================================ */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadHistory();
   await loadSession();
 });
 
-/* ====================================
-   HISTORIE
-==================================== */
+/* ================================
+   HISTORIE – JÍDLO ZA DATEM VLEVO
+================================ */
 async function loadHistory() {
   try {
     const res = await fetch(`${API_BASE}/history`);
@@ -98,7 +98,7 @@ async function loadHistory() {
     renderHistory(last14);
   } catch {
     document.getElementById("historySection").innerHTML =
-      `<div class="text-red-500 text-sm">Chyba načítání historie</div>`;
+      `<div class="text-red-500">Chyba načítání historie</div>`;
   }
 }
 
@@ -117,31 +117,35 @@ function renderHistory(items) {
 
   if (!items.length) {
     container.innerHTML =
-      `<div class="text-sm text-zinc-500">Žádná historie.</div>`;
+      `<div class="text-zinc-500">Žádná historie.</div>`;
     return;
   }
 
-  // Seřadíme od nejstaršího po nejnovější (nové dole)
+  // nejstarší nahoře, nejnovější dole
   items.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   items.forEach(item => {
     const row = document.createElement("div");
     row.className =
-      "flex justify-between text-sm bg-zinc-800 px-3 py-2 rounded-md mb-2";
+      "bg-zinc-800 px-3 py-2 rounded-md mb-2 text-zinc-300";
+
     row.innerHTML = `
-      <span class="text-zinc-400">${item.date}</span>
-      <span class="text-violet-400">${item.meal_name || item.meal_id}</span>
+      <span class="text-zinc-500">${item.date}</span>
+      <span class="ml-3 text-violet-400">
+        ${item.meal_name || item.meal_id}
+      </span>
     `;
+
     container.appendChild(row);
   });
 
-  // Scroll na konec → poslední 4 viditelné
+  // scroll dolů → poslední 4 vidět
   container.scrollTop = container.scrollHeight;
 }
 
-/* ====================================
+/* ================================
    SESSION / CHAT
-==================================== */
+================================ */
 async function loadSession() {
   try {
     const res = await fetch(`${API_BASE}/session`);
@@ -178,9 +182,9 @@ function appendMessage(role, content) {
   chat.appendChild(wrapper);
 }
 
-/* ====================================
-   LOADING
-==================================== */
+/* ================================
+   LOADING – mění se každé 2s
+================================ */
 function showLoading() {
   const chat = document.getElementById("chatSection");
 
@@ -210,9 +214,9 @@ function hideLoading() {
   loadingBubble = null;
 }
 
-/* ====================================
+/* ================================
    SEND
-==================================== */
+================================ */
 async function sendMessage() {
   const input = document.getElementById("messageInput");
   const message = input.value.trim();
@@ -238,7 +242,7 @@ async function sendMessage() {
     await loadHistory();
   } catch {
     hideLoading();
-    appendMessage("assistant", "Hmm. Tohle bylo trochu moc i na mě.");
+    appendMessage("assistant", "Hmm. To bylo i na mě moc.");
   }
 }
 
