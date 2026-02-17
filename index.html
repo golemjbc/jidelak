@@ -8,39 +8,57 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
-.glow { text-shadow: 0 0 8px rgba(124,58,237,0.7); }
+body {
+  background: radial-gradient(circle at 20% 20%, #2e1065 0%, #000000 60%);
+}
+
+#chatSection::-webkit-scrollbar,
+#historySection::-webkit-scrollbar {
+  width: 6px;
+}
+#chatSection::-webkit-scrollbar-thumb,
+#historySection::-webkit-scrollbar-thumb {
+  background: #7c3aed;
+  border-radius: 10px;
+}
+
+.glow {
+  text-shadow: 0 0 12px rgba(139,92,246,0.8);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>
 </head>
 
-<body class="bg-zinc-950 text-zinc-200 h-screen flex flex-col">
+<body class="h-screen flex flex-col text-zinc-200">
 
-<!-- LOGO menší -->
-<div class="flex justify-center bg-zinc-950">
+<!-- LOGO -->
+<div class="flex justify-center py-4">
   <img src="img/ELAI.png"
-       alt="ELAI Logo"
-       class="w-full max-w-2xl object-contain" />
+       class="w-full max-w-2xl object-contain glow" />
 </div>
 
 <!-- HISTORIE -->
 <div id="historySection"
-     class="h-48 overflow-y-auto border-b border-zinc-800 px-4 py-3 bg-zinc-900 flex flex-col text-sm">
+     class="h-56 overflow-y-auto px-6 py-4 backdrop-blur-xl bg-white/5 border-y border-white/10 flex flex-col">
 </div>
 
 <!-- CHAT -->
 <div id="chatSection"
-     class="flex-1 overflow-y-auto p-4 space-y-4">
+     class="flex-1 overflow-y-auto px-6 py-4 space-y-4">
 </div>
 
 <!-- INPUT -->
-<div class="border-t border-zinc-800 p-4 flex gap-3 bg-zinc-900">
+<div class="p-4 backdrop-blur-xl bg-white/5 border-t border-white/10 flex gap-3">
   <input id="messageInput"
          type="text"
          placeholder="Tak co mi dneska naservíruješ?"
-         class="flex-1 bg-zinc-800 text-zinc-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" />
+         class="flex-1 bg-black/40 border border-violet-600/40 text-zinc-200 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500" />
   <button onclick="sendMessage()"
-          class="bg-violet-600 hover:bg-violet-500 px-5 py-2 rounded-lg font-medium transition">
+          class="bg-gradient-to-r from-violet-600 to-purple-500 px-6 py-2 rounded-xl font-medium hover:scale-105 transition">
     Odeslat
   </button>
 </div>
@@ -50,7 +68,7 @@
 const API_BASE = "https://jidelak-bng5gggscsevacbw.westeurope-01.azurewebsites.net/api";
 
 /* ================================
-   🔥 LOADING HLÁŠKY
+   🔥 VŠECHNY PŮVODNÍ HLÁŠKY
 ================================ */
 const loadingMessages = [
 "Zvyšuju tlak. Udržíš to?",
@@ -78,17 +96,17 @@ const loadingMessages = [
 let loadingBubble = null;
 let loadingInterval = null;
 
-/* ================================
+/* ====================================
    INIT
-================================ */
+==================================== */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadHistory();
   await loadSession();
 });
 
-/* ================================
-   HISTORIE – JÍDLO ZA DATEM VLEVO
-================================ */
+/* ====================================
+   HISTORIE – 14 DNÍ + POSLEDNÍ 4 VIDITELNÉ
+==================================== */
 async function loadHistory() {
   try {
     const res = await fetch(`${API_BASE}/history`);
@@ -96,10 +114,7 @@ async function loadHistory() {
     const history = data.history || [];
     const last14 = filterLast14Days(history);
     renderHistory(last14);
-  } catch {
-    document.getElementById("historySection").innerHTML =
-      `<div class="text-red-500">Chyba načítání historie</div>`;
-  }
+  } catch {}
 }
 
 function filterLast14Days(history) {
@@ -115,37 +130,31 @@ function renderHistory(items) {
   const container = document.getElementById("historySection");
   container.innerHTML = "";
 
-  if (!items.length) {
-    container.innerHTML =
-      `<div class="text-zinc-500">Žádná historie.</div>`;
-    return;
-  }
+  if (!items.length) return;
 
-  // nejstarší nahoře, nejnovější dole
+  // seřadíme chronologicky
   items.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   items.forEach(item => {
     const row = document.createElement("div");
     row.className =
-      "bg-zinc-800 px-3 py-2 rounded-md mb-2 text-zinc-300";
-
+      "mb-2 px-4 py-2 rounded-xl bg-black/40 border border-violet-500/30 backdrop-blur-md text-sm animate-[fadeIn_0.3s_ease]";
     row.innerHTML = `
-      <span class="text-zinc-500">${item.date}</span>
-      <span class="ml-3 text-violet-400">
+      <span class="text-zinc-400">${item.date}</span>
+      <span class="ml-3 text-violet-300">
         ${item.meal_name || item.meal_id}
       </span>
     `;
-
     container.appendChild(row);
   });
 
-  // scroll dolů → poslední 4 vidět
+  // scroll dolů → poslední 4 vždy viditelné
   container.scrollTop = container.scrollHeight;
 }
 
-/* ================================
-   SESSION / CHAT
-================================ */
+/* ====================================
+   SESSION
+==================================== */
 async function loadSession() {
   try {
     const res = await fetch(`${API_BASE}/session`);
@@ -171,20 +180,20 @@ function appendMessage(role, content) {
     : "flex justify-start";
 
   wrapper.innerHTML = `
-    <div class="max-w-[75%] px-4 py-2 rounded-xl ${
+    <div class="max-w-[70%] px-5 py-3 rounded-2xl ${
       role === "user"
-        ? "bg-violet-600 text-white"
-        : "bg-zinc-800 text-zinc-200"
-    }">
+        ? "bg-gradient-to-br from-violet-600 to-purple-500 text-white"
+        : "bg-black/40 backdrop-blur-xl border border-violet-500/30 text-zinc-200"
+    } animate-[fadeIn_0.3s_ease] shadow-lg">
       ${content}
     </div>`;
 
   chat.appendChild(wrapper);
 }
 
-/* ================================
-   LOADING – mění se každé 2s
-================================ */
+/* ====================================
+   LOADING – MĚNÍ SE PO 2s
+==================================== */
 function showLoading() {
   const chat = document.getElementById("chatSection");
 
@@ -193,7 +202,7 @@ function showLoading() {
 
   const bubbleInner = document.createElement("div");
   bubbleInner.className =
-    "bg-zinc-800 text-violet-400 px-4 py-2 rounded-xl italic glow";
+    "bg-black/40 border border-violet-500/40 text-violet-300 px-5 py-3 rounded-2xl italic";
 
   bubbleInner.innerText =
     loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
@@ -214,9 +223,9 @@ function hideLoading() {
   loadingBubble = null;
 }
 
-/* ================================
+/* ====================================
    SEND
-================================ */
+==================================== */
 async function sendMessage() {
   const input = document.getElementById("messageInput");
   const message = input.value.trim();
@@ -242,7 +251,6 @@ async function sendMessage() {
     await loadHistory();
   } catch {
     hideLoading();
-    appendMessage("assistant", "Hmm. To bylo i na mě moc.");
   }
 }
 
