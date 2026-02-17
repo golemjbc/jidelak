@@ -10,7 +10,7 @@
 <style>
 
 /* ===========================
-   🌊 Animated Gradient Background
+   🌊 Animated Gradient Background (zachováno)
 =========================== */
 body {
   margin: 0;
@@ -34,93 +34,37 @@ body {
 }
 
 /* ===========================
-   🧊 Apple Liquid Glass
+   🧊 Stronger Apple Glass
 =========================== */
 .glass {
-  backdrop-filter: blur(35px) saturate(170%);
-  -webkit-backdrop-filter: blur(35px) saturate(170%);
-  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(50px) saturate(190%);
+  -webkit-backdrop-filter: blur(50px) saturate(190%);
+  background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.08);
   box-shadow:
-    0 12px 50px rgba(0,0,0,0.35),
-    inset 0 1px 0 rgba(255,255,255,0.18);
+    0 25px 90px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.25);
 }
 
 .glass-soft {
-  backdrop-filter: blur(45px);
-  -webkit-backdrop-filter: blur(45px);
+  backdrop-filter: blur(55px);
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.06);
 }
 
 /* ===========================
-   🍏 Apple Timeline
+   🍏 Floating WAU Timeline
 =========================== */
 .timeline-wrapper {
   position: relative;
-  height: 82px;
+  height: 100px;
   display: flex;
   align-items: center;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding: 0 40px;
-
-  backdrop-filter: blur(45px) saturate(180%);
-  background: rgba(255,255,255,0.05);
-  border-radius: 30px;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow:
-    0 25px 80px rgba(0,0,0,0.4),
-    inset 0 1px 0 rgba(255,255,255,0.2);
+  padding: 0 90px;
 }
 
-.timeline-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255,255,255,0.3),
-    transparent
-  );
-  transform: translateY(-50%);
-  opacity: 0.7;
-}
-
-.timeline-bubble {
-  scroll-snap-align: center;
-  margin: 0 8px;
-  padding: 6px 16px;
-  border-radius: 999px;
-  font-size: 11px;
-  letter-spacing: 0.03em;
-
-  backdrop-filter: blur(30px) saturate(160%);
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.1);
-
-  box-shadow:
-    0 8px 30px rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.15);
-
-  transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.timeline-bubble:hover {
-  transform: translateY(-4px) scale(1.05);
-}
-
-.timeline-bubble.today {
-  transform: scale(1.12);
-  box-shadow:
-    0 0 70px rgba(139,92,246,0.55),
-    0 15px 50px rgba(0,0,0,0.4);
-}
-
-/* Scrollbars */
 .timeline-wrapper::-webkit-scrollbar {
   height: 4px;
 }
@@ -129,6 +73,68 @@ body {
   border-radius: 10px;
 }
 
+/* ambient glow pod středem */
+.timeline-wrapper::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 15px;
+  width: 200px;
+  height: 40px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(139,92,246,0.35),
+    transparent 70%
+  );
+  pointer-events: none;
+  filter: blur(25px);
+}
+
+/* jednotlivé bubliny */
+.timeline-bubble {
+  scroll-snap-align: center;
+  margin: 0 10px;
+  padding: 10px 18px;
+  border-radius: 24px;
+  min-width: 130px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  backdrop-filter: blur(40px) saturate(180%);
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.14);
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+
+  transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+  transform-origin: center;
+  opacity: 0.35;
+}
+
+.timeline-bubble-date {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.timeline-bubble-meal {
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+.timeline-bubble.today {
+  box-shadow:
+    0 0 100px rgba(139,92,246,0.7),
+    0 25px 80px rgba(0,0,0,0.6);
+}
+
+/* chat scrollbar */
 #chatSection::-webkit-scrollbar {
   width: 4px;
 }
@@ -147,22 +153,15 @@ body {
 
 <body class="flex flex-col text-zinc-200 h-screen">
 
-<!-- TOP WRAPPER -->
-<div class="relative pt-6 pb-4">
+<!-- LOGO -->
+<div class="flex justify-center mt-0">
+  <img src="img/ELAI.png"
+       class="w-full max-w-[160px] object-contain opacity-95" />
+</div>
 
-  <!-- LOGO -->
-  <div class="flex justify-center">
-    <img src="img/ELAI.png"
-         class="w-full max-w-sm object-contain opacity-95" />
-  </div>
-
-  <!-- TIMELINE -->
-  <div class="relative mt-4 mx-6">
-    <div class="timeline-wrapper" id="historySection">
-      <div class="timeline-line"></div>
-    </div>
-  </div>
-
+<!-- TIMELINE -->
+<div class="mt-3">
+  <div class="timeline-wrapper" id="historySection"></div>
 </div>
 
 <!-- CHAT -->
@@ -217,9 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadSession();
 });
 
-/* ================================
-   HISTORY – posledních 14 dní
-================================ */
+/* HISTORY */
 async function loadHistory() {
   try {
     const res = await fetch(`${API_BASE}/history`);
@@ -233,53 +230,82 @@ function filterLast14Days(history) {
   const now = new Date();
   return history.filter(item => {
     const d = new Date(item.date);
-    const diff = (now - d) / (1000 * 60 * 60 * 24);
-    return diff <= 14;
+    return (now - d) / (1000 * 60 * 60 * 24) <= 14;
   });
 }
 
 function renderHistory(items) {
   const container = document.getElementById("historySection");
-  container.innerHTML = `<div class="timeline-line"></div>`;
+  container.innerHTML = "";
 
   if (!items.length) return;
 
   const today = new Date().toISOString().slice(0,10);
-
   items.sort((a,b)=> new Date(a.date) - new Date(b.date));
 
   let lastTodayBubble = null;
 
   items.forEach(item => {
+
     const bubble = document.createElement("div");
     bubble.className = "timeline-bubble";
 
     if (item.date === today) {
       bubble.classList.add("today");
-      lastTodayBubble = bubble; // uložíme POSLEDNÍ dnešní
+      lastTodayBubble = bubble;
     }
 
-    bubble.innerText = `${item.date} · ${item.meal_name || item.meal_id}`;
+    const dateDiv = document.createElement("div");
+    dateDiv.className = "timeline-bubble-date";
+    dateDiv.innerText = item.date;
+
+    const mealDiv = document.createElement("div");
+    mealDiv.className = "timeline-bubble-meal";
+    mealDiv.innerText = item.meal_name || item.meal_id;
+
+    bubble.appendChild(dateDiv);
+    bubble.appendChild(mealDiv);
     container.appendChild(bubble);
   });
 
   if (lastTodayBubble) {
     lastTodayBubble.scrollIntoView({ behavior: "smooth", inline: "center" });
-  } else {
-    container.scrollLeft = container.scrollWidth;
   }
+
+  container.addEventListener("scroll", () => updateTimelineScale(container));
+  updateTimelineScale(container);
 }
 
-/* ================================
-   SESSION
-================================ */
+/* WAU depth effect */
+function updateTimelineScale(container) {
+  const bubbles = container.querySelectorAll(".timeline-bubble");
+  const center = container.scrollLeft + container.offsetWidth / 2;
+
+  bubbles.forEach(bubble => {
+    const bubbleCenter =
+      bubble.offsetLeft + bubble.offsetWidth / 2;
+
+    const distance = Math.abs(center - bubbleCenter);
+    const maxDistance = container.offsetWidth / 2;
+
+    const ratio = Math.max(0, 1 - distance / maxDistance);
+
+    const scale = 0.7 + ratio * 0.5;
+    const opacity = 0.2 + ratio * 0.8;
+
+    bubble.style.transform = `scale(${scale})`;
+    bubble.style.opacity = opacity;
+  });
+}
+
+/* SESSION + CHAT (nezměněno) */
 async function loadSession() {
   try {
     const res = await fetch(`${API_BASE}/session`);
     const data = await res.json();
     const today = new Date().toISOString().slice(0,10);
-    const todaysSession = (data.sessions || []).find(s => s.date === today);
-    if (todaysSession) renderChat(todaysSession.messages);
+    const session = (data.sessions || []).find(s => s.date === today);
+    if (session) renderChat(session.messages);
   } catch {}
 }
 
@@ -314,9 +340,7 @@ function scrollChatToBottom() {
   chat.scrollTop = chat.scrollHeight;
 }
 
-/* ================================
-   LOADING
-================================ */
+/* LOADING (zachováno celé) */
 function showLoading() {
   const chat = document.getElementById("chatSection");
 
@@ -345,9 +369,7 @@ function hideLoading() {
   loadingBubble = null;
 }
 
-/* ================================
-   SEND
-================================ */
+/* SEND (zachováno) */
 async function sendMessage() {
   const input = document.getElementById("messageInput");
   const message = input.value.trim();
