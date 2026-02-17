@@ -8,42 +8,78 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
+
+/* ===========================
+   🌊 Moving Liquid Background
+=========================== */
 body {
-  background: radial-gradient(circle at 20% 20%, #2e1065 0%, #000000 60%);
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(
+    120deg,
+    #0f172a,
+    #1e1b4b,
+    #111827,
+    #1e293b
+  );
+  background-size: 300% 300%;
+  animation: gradientMove 18s ease infinite;
+  overflow: hidden;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ===========================
+   🧊 Liquid Glass
+=========================== */
+.glass {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.glass-soft {
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
 }
 
 #chatSection::-webkit-scrollbar,
 #historySection::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 #chatSection::-webkit-scrollbar-thumb,
 #historySection::-webkit-scrollbar-thumb {
-  background: #7c3aed;
+  background: rgba(139,92,246,0.5);
   border-radius: 10px;
 }
 
-.glow {
-  text-shadow: 0 0 12px rgba(139,92,246,0.8);
-}
-
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
 </style>
 </head>
 
-<body class="h-screen flex flex-col text-zinc-200">
+<body class="flex flex-col text-zinc-200 h-screen">
 
-<!-- LOGO -->
+<!-- LOGO (menší, čisté) -->
 <div class="flex justify-center py-4">
   <img src="img/ELAI.png"
-       class="w-full max-w-2xl object-contain glow" />
+       class="w-full max-w-xl object-contain" />
 </div>
 
-<!-- HISTORIE -->
+<!-- HISTORIE – glass bubbles -->
 <div id="historySection"
-     class="h-56 overflow-y-auto px-6 py-4 backdrop-blur-xl bg-white/5 border-y border-white/10 flex flex-col">
+     class="h-32 flex items-center gap-3 overflow-x-auto px-6 py-3 glass-soft">
 </div>
 
 <!-- CHAT -->
@@ -52,13 +88,13 @@ body {
 </div>
 
 <!-- INPUT -->
-<div class="p-4 backdrop-blur-xl bg-white/5 border-t border-white/10 flex gap-3">
+<div class="p-4 glass-soft flex gap-3">
   <input id="messageInput"
          type="text"
          placeholder="Tak co mi dneska naservíruješ?"
-         class="flex-1 bg-black/40 border border-violet-600/40 text-zinc-200 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500" />
+         class="flex-1 bg-transparent text-zinc-200 px-4 py-2 rounded-xl focus:outline-none" />
   <button onclick="sendMessage()"
-          class="bg-gradient-to-r from-violet-600 to-purple-500 px-6 py-2 rounded-xl font-medium hover:scale-105 transition">
+          class="px-6 py-2 rounded-2xl bg-gradient-to-br from-violet-500/80 to-indigo-500/80 text-white hover:scale-105 transition">
     Odeslat
   </button>
 </div>
@@ -68,7 +104,7 @@ body {
 const API_BASE = "https://jidelak-bng5gggscsevacbw.westeurope-01.azurewebsites.net/api";
 
 /* ================================
-   🔥 VŠECHNY PŮVODNÍ HLÁŠKY
+   🔥 LOADING HLÁŠKY
 ================================ */
 const loadingMessages = [
 "Zvyšuju tlak. Udržíš to?",
@@ -96,24 +132,21 @@ const loadingMessages = [
 let loadingBubble = null;
 let loadingInterval = null;
 
-/* ====================================
-   INIT
-==================================== */
+/* INIT */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadHistory();
   await loadSession();
 });
 
-/* ====================================
+/* ================================
    HISTORIE – 14 DNÍ + POSLEDNÍ 4 VIDITELNÉ
-==================================== */
+================================ */
 async function loadHistory() {
   try {
     const res = await fetch(`${API_BASE}/history`);
     const data = await res.json();
     const history = data.history || [];
-    const last14 = filterLast14Days(history);
-    renderHistory(last14);
+    renderHistory(filterLast14Days(history));
   } catch {}
 }
 
@@ -132,29 +165,30 @@ function renderHistory(items) {
 
   if (!items.length) return;
 
-  // seřadíme chronologicky
-  items.sort((a, b) => new Date(a.date) - new Date(b.date));
+  items.sort((a,b)=> new Date(a.date) - new Date(b.date));
 
   items.forEach(item => {
-    const row = document.createElement("div");
-    row.className =
-      "mb-2 px-4 py-2 rounded-xl bg-black/40 border border-violet-500/30 backdrop-blur-md text-sm animate-[fadeIn_0.3s_ease]";
-    row.innerHTML = `
-      <span class="text-zinc-400">${item.date}</span>
-      <span class="ml-3 text-violet-300">
-        ${item.meal_name || item.meal_id}
-      </span>
+    const bubble = document.createElement("div");
+    bubble.className = `
+      px-4 py-2
+      rounded-full
+      text-xs
+      whitespace-nowrap
+      glass
+      text-zinc-300
+      hover:scale-105
+      transition
     `;
-    container.appendChild(row);
+    bubble.innerText = `${item.date} • ${item.meal_name || item.meal_id}`;
+    container.appendChild(bubble);
   });
 
-  // scroll dolů → poslední 4 vždy viditelné
-  container.scrollTop = container.scrollHeight;
+  container.scrollLeft = container.scrollWidth;
 }
 
-/* ====================================
-   SESSION
-==================================== */
+/* ================================
+   SESSION / CHAT
+================================ */
 async function loadSession() {
   try {
     const res = await fetch(`${API_BASE}/session`);
@@ -180,20 +214,20 @@ function appendMessage(role, content) {
     : "flex justify-start";
 
   wrapper.innerHTML = `
-    <div class="max-w-[70%] px-5 py-3 rounded-2xl ${
+    <div class="max-w-[70%] px-5 py-3 rounded-3xl ${
       role === "user"
-        ? "bg-gradient-to-br from-violet-600 to-purple-500 text-white"
-        : "bg-black/40 backdrop-blur-xl border border-violet-500/30 text-zinc-200"
-    } animate-[fadeIn_0.3s_ease] shadow-lg">
+        ? "bg-gradient-to-br from-violet-500/80 to-indigo-500/80 text-white shadow-md"
+        : "glass text-zinc-200"
+    } animate-[fadeIn_0.3s_ease] transition">
       ${content}
     </div>`;
 
   chat.appendChild(wrapper);
 }
 
-/* ====================================
+/* ================================
    LOADING – MĚNÍ SE PO 2s
-==================================== */
+================================ */
 function showLoading() {
   const chat = document.getElementById("chatSection");
 
@@ -201,8 +235,7 @@ function showLoading() {
   loadingBubble.className = "flex justify-start";
 
   const bubbleInner = document.createElement("div");
-  bubbleInner.className =
-    "bg-black/40 border border-violet-500/40 text-violet-300 px-5 py-3 rounded-2xl italic";
+  bubbleInner.className = "glass px-5 py-3 rounded-3xl italic text-zinc-300";
 
   bubbleInner.innerText =
     loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
@@ -223,9 +256,7 @@ function hideLoading() {
   loadingBubble = null;
 }
 
-/* ====================================
-   SEND
-==================================== */
+/* SEND */
 async function sendMessage() {
   const input = document.getElementById("messageInput");
   const message = input.value.trim();
