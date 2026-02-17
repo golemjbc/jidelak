@@ -10,24 +10,22 @@
 <style>
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
-
-.glow {
-  text-shadow: 0 0 8px rgba(124,58,237,0.7);
-}
+.glow { text-shadow: 0 0 8px rgba(124,58,237,0.7); }
 </style>
 </head>
 
 <body class="bg-zinc-950 text-zinc-200 h-screen flex flex-col">
 
-<!-- HEADER S LOGEM -->
-<div class="p-4 border-b border-zinc-800 flex items-center justify-center bg-zinc-950">
-  <img src="img/ELAI.png" alt="ELAI Logo" class="h-12 object-contain" />
+<!-- LOGO -->
+<div class="flex justify-center bg-zinc-950">
+  <img src="img/ELAI.png"
+       alt="ELAI Logo"
+       class="w-full max-w-5xl object-contain" />
 </div>
 
 <!-- HISTORIE -->
 <div id="historySection"
-     class="h-1/3 overflow-y-auto border-b border-zinc-800 p-4 space-y-3 bg-zinc-900">
-  <div class="text-sm text-zinc-400">Načítám historii...</div>
+     class="h-56 overflow-y-auto border-b border-zinc-800 px-4 py-3 bg-zinc-900 flex flex-col">
 </div>
 
 <!-- CHAT -->
@@ -51,9 +49,9 @@
 
 const API_BASE = "https://jidelak-bng5gggscsevacbw.westeurope-01.azurewebsites.net/api";
 
-/* =============================
-   🔥 LOADING HLÁŠKY
-============================= */
+/* ====================================
+   🔥 LOADING HLÁŠKY (mění se po 2s)
+==================================== */
 const loadingMessages = [
 "Zvyšuju tlak. Udržíš to?",
 "Teplota roste. A já to miluju.",
@@ -78,24 +76,26 @@ const loadingMessages = [
 ];
 
 let loadingBubble = null;
+let loadingInterval = null;
 
-/* =============================
-   NAČTENÍ DAT
-============================= */
+/* ====================================
+   INIT
+==================================== */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadHistory();
   await loadSession();
 });
 
-/* =============================
+/* ====================================
    HISTORIE
-============================= */
+==================================== */
 async function loadHistory() {
   try {
     const res = await fetch(`${API_BASE}/history`);
     const data = await res.json();
     const history = data.history || [];
-    renderHistory(filterLast14Days(history));
+    const last14 = filterLast14Days(history);
+    renderHistory(last14);
   } catch {
     document.getElementById("historySection").innerHTML =
       `<div class="text-red-500 text-sm">Chyba načítání historie</div>`;
@@ -108,7 +108,7 @@ function filterLast14Days(history) {
     const d = new Date(item.date);
     const diff = (now - d) / (1000 * 60 * 60 * 24);
     return diff <= 14;
-  }).reverse();
+  });
 }
 
 function renderHistory(items) {
@@ -116,35 +116,32 @@ function renderHistory(items) {
   container.innerHTML = "";
 
   if (!items.length) {
-    container.innerHTML = `<div class="text-sm text-zinc-500">Žádná historie.</div>`;
+    container.innerHTML =
+      `<div class="text-sm text-zinc-500">Žádná historie.</div>`;
     return;
   }
 
-  let grouped = {};
+  // Seřadíme od nejstaršího po nejnovější (nové dole)
+  items.sort((a, b) => new Date(a.date) - new Date(b.date));
+
   items.forEach(item => {
-    if (!grouped[item.date]) grouped[item.date] = [];
-    grouped[item.date].push(item);
+    const row = document.createElement("div");
+    row.className =
+      "flex justify-between text-sm bg-zinc-800 px-3 py-2 rounded-md mb-2";
+    row.innerHTML = `
+      <span class="text-zinc-400">${item.date}</span>
+      <span class="text-violet-400">${item.meal_name || item.meal_id}</span>
+    `;
+    container.appendChild(row);
   });
 
-  Object.keys(grouped).sort().reverse().forEach(date => {
-    const block = document.createElement("div");
-    block.innerHTML = `
-      <div class="text-xs text-zinc-400 mb-1">${date}</div>
-      <div class="space-y-1">
-        ${grouped[date].map(i =>
-          `<div class="text-sm bg-zinc-800 px-3 py-1 rounded-md inline-block mr-2">
-            ${i.meal_name || i.meal_id}
-           </div>`
-        ).join("")}
-      </div>
-    `;
-    container.appendChild(block);
-  });
+  // Scroll na konec → poslední 4 viditelné
+  container.scrollTop = container.scrollHeight;
 }
 
-/* =============================
+/* ====================================
    SESSION / CHAT
-============================= */
+==================================== */
 async function loadSession() {
   try {
     const res = await fetch(`${API_BASE}/session`);
@@ -165,7 +162,10 @@ function renderChat(messages) {
 function appendMessage(role, content) {
   const chat = document.getElementById("chatSection");
   const wrapper = document.createElement("div");
-  wrapper.className = role === "user" ? "flex justify-end" : "flex justify-start";
+  wrapper.className = role === "user"
+    ? "flex justify-end"
+    : "flex justify-start";
+
   wrapper.innerHTML = `
     <div class="max-w-[75%] px-4 py-2 rounded-xl ${
       role === "user"
@@ -174,34 +174,45 @@ function appendMessage(role, content) {
     }">
       ${content}
     </div>`;
+
   chat.appendChild(wrapper);
 }
 
-/* =============================
-   LOADING BUBBLE
-============================= */
+/* ====================================
+   LOADING
+==================================== */
 function showLoading() {
-  const randomText = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+  const chat = document.getElementById("chatSection");
+
   loadingBubble = document.createElement("div");
   loadingBubble.className = "flex justify-start";
-  loadingBubble.innerHTML = `
-    <div class="bg-zinc-800 text-violet-400 px-4 py-2 rounded-xl animate-pulse italic glow">
-      ${randomText}
-    </div>`;
-  document.getElementById("chatSection").appendChild(loadingBubble);
+
+  const bubbleInner = document.createElement("div");
+  bubbleInner.className =
+    "bg-zinc-800 text-violet-400 px-4 py-2 rounded-xl italic glow";
+
+  bubbleInner.innerText =
+    loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+
+  loadingBubble.appendChild(bubbleInner);
+  chat.appendChild(loadingBubble);
   scrollChatToBottom();
+
+  loadingInterval = setInterval(() => {
+    bubbleInner.innerText =
+      loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+  }, 2000);
 }
 
 function hideLoading() {
-  if (loadingBubble) {
-    loadingBubble.remove();
-    loadingBubble = null;
-  }
+  if (loadingInterval) clearInterval(loadingInterval);
+  if (loadingBubble) loadingBubble.remove();
+  loadingBubble = null;
 }
 
-/* =============================
-   ODESLÁNÍ
-============================= */
+/* ====================================
+   SEND
+==================================== */
 async function sendMessage() {
   const input = document.getElementById("messageInput");
   const message = input.value.trim();
@@ -227,7 +238,7 @@ async function sendMessage() {
     await loadHistory();
   } catch {
     hideLoading();
-    appendMessage("assistant", "Hmm. Tohle nebylo úplně podle plánu.");
+    appendMessage("assistant", "Hmm. Tohle bylo trochu moc i na mě.");
   }
 }
 
