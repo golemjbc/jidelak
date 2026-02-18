@@ -314,24 +314,22 @@ function renderHistory(items) {
 
     requestAnimationFrame(() => {
 
-      // dočasně vypneme snap
-      container.style.scrollSnapType = "none";
-
-      const offset =
-        lastTodayBubble.offsetLeft -
-        (container.offsetWidth / 2) +
+      const bubbleCenter =
+        lastTodayBubble.offsetLeft +
         (lastTodayBubble.offsetWidth / 2);
 
-      container.scrollLeft = offset;
+      const containerCenter =
+        container.clientWidth / 2;
 
-      // vrátíme snap zpět
-      setTimeout(() => {
-        container.style.scrollSnapType = "x mandatory";
-      }, 50);
+      const newScrollLeft =
+        bubbleCenter - containerCenter;
+
+      container.scrollLeft = newScrollLeft;
 
       updateTimelineScale(container);
     });
   }
+
 
 
   container.addEventListener("scroll", () => updateTimelineScale(container));
