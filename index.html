@@ -311,23 +311,28 @@ function renderHistory(items) {
   });
 
   if (lastTodayBubble) {
+
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
 
-        const offset =
-          lastTodayBubble.offsetLeft -
-          (container.offsetWidth / 2) +
-          (lastTodayBubble.offsetWidth / 2);
+      // dočasně vypneme snap
+      container.style.scrollSnapType = "none";
 
-        container.scrollTo({
-          left: offset,
-          behavior: "auto"
-        });
+      const offset =
+        lastTodayBubble.offsetLeft -
+        (container.offsetWidth / 2) +
+        (lastTodayBubble.offsetWidth / 2);
 
-        updateTimelineScale(container);
-      });
+      container.scrollLeft = offset;
+
+      // vrátíme snap zpět
+      setTimeout(() => {
+        container.style.scrollSnapType = "x mandatory";
+      }, 50);
+
+      updateTimelineScale(container);
     });
   }
+
 
   container.addEventListener("scroll", () => updateTimelineScale(container));
   updateTimelineScale(container);
