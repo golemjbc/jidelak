@@ -308,6 +308,7 @@ function renderHistory(items) {
     bubble.appendChild(dateDiv);
     bubble.appendChild(mealDiv);
     container.appendChild(bubble);
+
     if (item.date === today) {
       setTimeout(() => {
         bubble.scrollIntoView({
@@ -316,8 +317,31 @@ function renderHistory(items) {
         });
       }, 0);
     }
-
   });
+
+  // 🔥 --- TADY JE JEDINÁ PŘIDANÁ VĚC ---
+  // spacer bublina na zítřek
+
+  const spacer = document.createElement("div");
+  spacer.className = "timeline-bubble";
+  spacer.style.opacity = "0.15";
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const spacerDate = document.createElement("div");
+  spacerDate.className = "timeline-bubble-date";
+  spacerDate.innerText = tomorrow.toISOString().slice(0,10);
+
+  const spacerMeal = document.createElement("div");
+  spacerMeal.className = "timeline-bubble-meal";
+  spacerMeal.innerText = "Těš se!";
+
+  spacer.appendChild(spacerDate);
+  spacer.appendChild(spacerMeal);
+  container.appendChild(spacer);
+
+  // --------------------------------------
 
   container.addEventListener("scroll", () => {
     if (!container.dataset.locked) {
@@ -326,8 +350,8 @@ function renderHistory(items) {
   });
 
   updateTimelineScale(container);
-
 }
+
 
 /* WAU depth effect */
 function updateTimelineScale(container) {
