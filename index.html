@@ -311,8 +311,20 @@ function renderHistory(items) {
   });
 
   if (lastTodayBubble) {
-    lastTodayBubble.scrollIntoView({ behavior: "smooth", inline: "center" });
+    const containerRect = container.getBoundingClientRect();
+    const bubbleRect = lastTodayBubble.getBoundingClientRect();
+
+    const offset =
+      lastTodayBubble.offsetLeft -
+      (container.offsetWidth / 2) +
+      (lastTodayBubble.offsetWidth / 2);
+
+    container.scrollTo({
+      left: offset,
+      behavior: "smooth"
+    });
   }
+
 
   container.addEventListener("scroll", () => updateTimelineScale(container));
   updateTimelineScale(container);
