@@ -111,6 +111,43 @@ body {
   max-width: 110px;
 }
 
+.timeline-bubble {
+  scroll-snap-align: center;
+  margin: 0 12px;
+  padding: 10px 18px;
+  border-radius: 24px;
+  min-width: 130px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  backdrop-filter: blur(40px) saturate(180%);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  transform-origin: center;
+  opacity: 0.4;
+}
+
+.timeline-bubble-date {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.timeline-bubble.today {
+  box-shadow:
+    0 0 120px rgba(139,92,246,0.8),
+    0 30px 80px rgba(0,0,0,0.7);
+}
+
+
 /* ===========================
    ✨ Scrollbar
 =========================== */
