@@ -97,7 +97,7 @@ body {
   display: flex;
   align-items: center;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
   padding: 0 40px;   /* menší padding */
   gap: 8px;          /* kontrolované mezery */
 }
@@ -308,32 +308,16 @@ function renderHistory(items) {
     bubble.appendChild(dateDiv);
     bubble.appendChild(mealDiv);
     container.appendChild(bubble);
-  });
-
-  if (lastTodayBubble) {
-
-    requestAnimationFrame(() => {
-
-      container.dataset.locked = "true";
-
-      const bubbleCenter =
-        lastTodayBubble.offsetLeft +
-        (lastTodayBubble.offsetWidth / 2);
-
-      const containerCenter =
-        container.clientWidth / 2;
-
-      container.scrollLeft =
-        bubbleCenter - containerCenter;
-
-      updateTimelineScale(container);
-
+    if (item.date === today) {
       setTimeout(() => {
-        delete container.dataset.locked;
-      }, 100);
-    });
-  }
+        bubble.scrollIntoView({
+          inline: "center",
+          behavior: "auto"
+        });
+      }, 0);
+    }
 
+  });
 
   container.addEventListener("scroll", () => {
     if (!container.dataset.locked) {
