@@ -179,8 +179,10 @@ body {
 
 <!-- CHAT -->
 <div id="chatSection"
-     class="flex-1 overflow-y-auto px-6 py-4 space-y-6 max-w-2xl mx-auto">
+     class="flex-1 overflow-y-auto px-6 py-4 space-y-6 max-w-2xl mx-auto"
+     style="padding-bottom: 160px;">
 </div>
+
 
 
 <!-- FLOATING INPUT -->
@@ -397,7 +399,7 @@ function renderChat(messages) {
   const chat = document.getElementById("chatSection");
   chat.innerHTML = "";
   messages.forEach(msg => appendMessage(msg.role, msg.content));
-  scrollChatToBottom();
+  setTimeout(scrollChatToBottom, 50);
 }
 
 function appendMessage(role, content) {
