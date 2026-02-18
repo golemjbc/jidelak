@@ -311,20 +311,23 @@ function renderHistory(items) {
   });
 
   if (lastTodayBubble) {
-    const containerRect = container.getBoundingClientRect();
-    const bubbleRect = lastTodayBubble.getBoundingClientRect();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
 
-    const offset =
-      lastTodayBubble.offsetLeft -
-      (container.offsetWidth / 2) +
-      (lastTodayBubble.offsetWidth / 2);
+        const offset =
+          lastTodayBubble.offsetLeft -
+          (container.offsetWidth / 2) +
+          (lastTodayBubble.offsetWidth / 2);
 
-    container.scrollTo({
-      left: offset,
-      behavior: "smooth"
+        container.scrollTo({
+          left: offset,
+          behavior: "auto"
+        });
+
+        updateTimelineScale(container);
+      });
     });
   }
-
 
   container.addEventListener("scroll", () => updateTimelineScale(container));
   updateTimelineScale(container);
