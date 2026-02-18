@@ -314,6 +314,8 @@ function renderHistory(items) {
 
     requestAnimationFrame(() => {
 
+      container.dataset.locked = "true";
+
       const bubbleCenter =
         lastTodayBubble.offsetLeft +
         (lastTodayBubble.offsetWidth / 2);
@@ -321,19 +323,26 @@ function renderHistory(items) {
       const containerCenter =
         container.clientWidth / 2;
 
-      const newScrollLeft =
+      container.scrollLeft =
         bubbleCenter - containerCenter;
 
-      container.scrollLeft = newScrollLeft;
-
       updateTimelineScale(container);
+
+      setTimeout(() => {
+        delete container.dataset.locked;
+      }, 100);
     });
   }
 
 
+  container.addEventListener("scroll", () => {
+    if (!container.dataset.locked) {
+      updateTimelineScale(container);
+    }
+  });
 
-  container.addEventListener("scroll", () => updateTimelineScale(container));
   updateTimelineScale(container);
+
 }
 
 /* WAU depth effect */
