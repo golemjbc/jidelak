@@ -25,6 +25,7 @@ body {
   background-size: 300% 300%;
   animation: gradientMove 18s ease infinite;
   overflow-x: hidden;
+  padding-bottom: 140px; /* prostor pro floating input */
 }
 
 @keyframes gradientMove {
@@ -46,6 +47,7 @@ body {
     rgba(255,255,255,0.06)
   );
   border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 26px;
 
   box-shadow:
     0 40px 120px rgba(0,0,0,0.75),
@@ -55,37 +57,6 @@ body {
   overflow: hidden;
   transform-style: preserve-3d;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.glass::before {
-  content: "";
-  position: absolute;
-  top: -40%;
-  left: -40%;
-  width: 180%;
-  height: 180%;
-  background: radial-gradient(
-    circle at var(--light, 50% 50%),
-  rgba(255,255,255,0.8),
-    transparent 60%
-  );
- 
-  opacity: 0.06;
-  pointer-events: none;
-  transition: transform 0.3s ease;
-}
-
-/* ===========================
-   🧊 Input Glass
-=========================== */
-.glass-soft {
-  backdrop-filter: blur(80px) saturate(200%);
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.08),
-    rgba(255,255,255,0.03)
-  );
-  border-top: 1px solid rgba(255,255,255,0.15);
 }
 
 /* ===========================
@@ -98,24 +69,12 @@ body {
   align-items: center;
   overflow-x: auto;
   scroll-snap-type: x proximity;
-  padding: 0 40px;   /* menší padding */
-  gap: 8px;          /* kontrolované mezery */
-}
-
-
-.timeline-bubble-meal {
-  font-size: 13px;
-  font-weight: 500;
-  margin-top: 3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 110px;
+  padding: 0 40px;
+  gap: 8px;
 }
 
 .timeline-bubble {
   scroll-snap-align: center;
-  margin: 0;
   padding: 10px 18px;
   border-radius: 24px;
   min-width: 130px;
@@ -143,12 +102,53 @@ body {
   opacity: 0.7;
 }
 
+.timeline-bubble-meal {
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+
 .timeline-bubble.today {
   box-shadow:
     0 0 120px rgba(139,92,246,0.8),
     0 30px 80px rgba(0,0,0,0.7);
 }
 
+/* ===========================
+   💎 FLOATING INPUT
+=========================== */
+.input-wrapper {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  max-width: 520px;
+
+  backdrop-filter: blur(60px) saturate(180%);
+  -webkit-backdrop-filter: blur(60px) saturate(180%);
+
+  background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.18),
+      rgba(255,255,255,0.05)
+  );
+
+  border-radius: 44px;
+  border: 1px solid rgba(255,255,255,0.25);
+
+  box-shadow:
+      0 30px 100px rgba(0,0,0,0.75),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+}
 
 /* ===========================
    ✨ Scrollbar
@@ -161,41 +161,47 @@ body {
   border-radius: 10px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 </style>
 </head>
 
-<body class="flex flex-col text-zinc-200 h-screen">
+<body class="text-zinc-200">
 
-<div class="flex justify-center mt-2">
+<!-- LOGO -->
+<div class="flex justify-center mt-6 mb-2">
   <img src="img/ELAI.png"
        class="w-full max-w-[160px] object-contain opacity-95" />
 </div>
 
+<!-- TIMELINE -->
 <div class="mt-3">
   <div class="timeline-wrapper" id="historySection"></div>
 </div>
 
+<!-- CHAT -->
 <div id="chatSection"
-     class="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+     class="px-6 py-4 space-y-6 max-w-2xl mx-auto">
 </div>
 
-<div class="p-4 glass-soft flex gap-3">
+<!-- FLOATING INPUT -->
+<div class="input-wrapper">
   <input id="messageInput"
          type="text"
          placeholder="Tak co mi dneska naservíruješ?"
-         class="flex-1 bg-transparent text-zinc-200 px-4 py-3 rounded-2xl focus:outline-none border border-white/10 backdrop-blur-lg" />
+         class="flex-1 bg-transparent text-zinc-200 px-4 py-3 rounded-3xl focus:outline-none" />
+
   <button onclick="sendMessage()"
-          class="px-6 py-3 rounded-2xl bg-gradient-to-br from-violet-500/70 to-indigo-500/70 text-white border border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.6)] hover:scale-105 transition">
+          class="px-6 py-3 rounded-3xl 
+                 bg-gradient-to-br from-violet-500/80 to-indigo-500/80 
+                 text-white 
+                 shadow-lg 
+                 hover:scale-105 
+                 transition">
     Odeslat
   </button>
 </div>
 
 <script>
+
 
 /* ===========================
    🎥 3D TILT SYSTEM
