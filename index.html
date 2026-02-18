@@ -25,7 +25,7 @@ body {
   background-size: 300% 300%;
   animation: gradientMove 18s ease infinite;
   overflow-x: hidden;
-  padding-bottom: 140px; /* prostor pro floating input */
+  /*padding-bottom: 140px; /* prostor pro floating input */
 }
 
 @keyframes gradientMove {
@@ -164,7 +164,7 @@ body {
 </style>
 </head>
 
-<body class="text-zinc-200">
+<body class="flex flex-col text-zinc-200 h-screen overflow-hidden">
 
 <!-- LOGO -->
 <div class="flex justify-center mt-6 mb-2">
@@ -179,8 +179,9 @@ body {
 
 <!-- CHAT -->
 <div id="chatSection"
-     class="px-6 py-4 space-y-6 max-w-2xl mx-auto">
+     class="flex-1 overflow-y-auto px-6 py-4 space-y-6 max-w-2xl mx-auto">
 </div>
+
 
 <!-- FLOATING INPUT -->
 <div class="input-wrapper">
