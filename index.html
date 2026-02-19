@@ -177,6 +177,14 @@ body {
   scrollbar-width: none;
 }
 
+.user-bubble {
+  position: relative;
+  box-shadow:
+    0 25px 70px rgba(99,102,241,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset 0 -1px 0 rgba(0,0,0,0.2);
+}
+
 
 </style>
 </head>
@@ -433,13 +441,16 @@ function appendMessage(role, content) {
     : "flex justify-start";
 
   wrapper.innerHTML = `
-     <div class="${role === "assistant" ? "tilt" : ""} max-w-[70%] px-5 py-3 rounded-3xl ${
-      role === "user"
-        ? "bg-gradient-to-br from-violet-500/80 to-indigo-500/80 text-white shadow-md"
-        : "glass text-zinc-200"
-    } animate-[fadeIn_0.3s_ease] transition">
+    <div class="${
+      role === "assistant" ? "tilt glass text-zinc-200" : 
+      "bg-gradient-to-br from-violet-500 to-indigo-600 text-white border border-white/20 shadow-[0_25px_70px_rgba(99,102,241,0.6)]"
+    } 
+    max-w-[70%] px-5 py-3 rounded-3xl 
+    animate-[fadeIn_0.3s_ease] 
+    transition-all duration-300 ease-out">
       ${content}
     </div>`;
+
 
   chat.appendChild(wrapper);
 }
@@ -577,7 +588,7 @@ document.addEventListener("DOMContentLoaded", () => {
        pointer-events: none;
        z-index: 9999;
      ">
-  v1.27
+  v1.28
 </div>
 <script>
 if ('serviceWorker' in navigator) {
