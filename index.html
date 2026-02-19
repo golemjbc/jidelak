@@ -132,29 +132,27 @@ body {
 =========================== */
 .input-wrapper {
   position: fixed;
-  bottom: 25px;
+  bottom: 20px; /* o chlup níž, méně nalepené */
   left: 50%;
   transform: translateX(-50%);
   width: 92%;
   max-width: 520px;
 
-  background: linear-gradient(
-      135deg,
-      rgba(255,255,255,0.18),
-      rgba(255,255,255,0.05)
-  );
-
+  background: rgba(15, 15, 35, 0.85); /* tmavší, čitelné */
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 44px;
-  border: 1px solid rgba(255,255,255,0.25);
 
   box-shadow:
-      0 30px 100px rgba(0,0,0,0.75),
-      inset 0 1px 0 rgba(255,255,255,0.5);
+    0 20px 60px rgba(0,0,0,0.7),
+    0 0 40px rgba(139,92,246,0.18); /* jemný neon glow */
 
-  padding: 12px;
+  padding: 14px;
   display: flex;
   gap: 10px;
+
+  backdrop-filter: none; /* jistota */
 }
+
 
 /* ===========================
    ✨ Scrollbar
@@ -495,8 +493,9 @@ async function sendMessage() {
     const data = await res.json();
     hideLoading();
     appendMessage("assistant", data.reply);
-    scrollChatToBottom();
     await loadHistory();
+    setTimeout(scrollChatToBottom, 50);
+
   } catch {
     hideLoading();
   }
@@ -571,7 +570,7 @@ document.addEventListener("DOMContentLoaded", () => {
        pointer-events: none;
        z-index: 9999;
      ">
-  v1.13
+  v1.14
 </div>
 
 </body>
