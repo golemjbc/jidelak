@@ -134,14 +134,13 @@ body {
    💎 FLOATING INPUT
 =========================== */
 .input-wrapper {
-  position: sticky;
-  bottom: 0;
+  position: fixed;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   width: 94%;
   max-width: 520px;
-  backdrop-filter: blur(12px);
-  
+
   display: flex;
   align-items: center;
   gap: 8px;
@@ -190,8 +189,7 @@ body {
 </style>
 </head>
 
-<body class="flex flex-col min-h-[100dvh] text-zinc-200">
-
+<body class="flex flex-col h-screen text-zinc-200 overflow-hidden">
 
 <!-- LOGO -->
 <header class="w-full flex justify-center leading-none pt-2">
@@ -206,7 +204,8 @@ body {
 
 <!-- CHAT -->
 <div id="chatSection"
-     class="flex-1 overflow-y-auto px-6 pt-4 space-y-6 max-w-2xl mx-auto">
+     class="flex-1 overflow-y-auto px-6 pt-4 space-y-6 max-w-2xl mx-auto"
+     style="padding-bottom: 140px;">
 </div>
 
 
@@ -214,15 +213,9 @@ body {
 <!-- FLOATING INPUT -->
 <div class="input-wrapper">
   <input id="messageInput"
-       type="text"
-       autocomplete="off"
-       autocorrect="off"
-       autocapitalize="off"
-       spellcheck="false"
-       inputmode="text"
-       placeholder="Máš hlad nebo jen chuť?"
-       class="flex-1 bg-transparent text-zinc-200 px-12 py-2 text-sm focus:outline-none" />
-
+         type="text"
+         placeholder="Tak co mi dneska naservíruješ?"
+         class="flex-1 bg-transparent text-zinc-200 px-12 py-2 text-sm focus:outline-none" />
 
     <button onclick="sendMessage()"
             class="w-10 h-10 flex items-center justify-center rounded-full 
@@ -595,7 +588,7 @@ document.addEventListener("DOMContentLoaded", () => {
        pointer-events: none;
        z-index: 9999;
      ">
-  v1.30
+  v1.31
 </div>
 <script>
 if ('serviceWorker' in navigator) {
