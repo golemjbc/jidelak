@@ -177,50 +177,11 @@ body {
   scrollbar-width: none;
 }
 
-#splash {
-  position: fixed;
-  inset: 0;
-  background: #0a1045;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-  animation: splashFade 0.6s ease forwards;
-  animation-delay: 0.9s;
-}
-
-/* jen glow efekt přes existující logo */
-.splash-glow {
-  width: 260px;
-  height: 260px;
-  background: radial-gradient(
-    circle,
-    rgba(139,92,246,0.45),
-    transparent 70%
-  );
-  filter: blur(50px);
-  animation: glowPulse 0.9s ease-in-out forwards;
-}
-
-@keyframes glowPulse {
-  0% { opacity: 0; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1.05); }
-}
-
-@keyframes splashFade {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
 
 </style>
 </head>
 
 <body class="flex flex-col h-screen text-zinc-200 overflow-hidden">
-<div id="splash">
-  <div class="splash-glow"></div>
-  </div>
 
 <!-- LOGO -->
 <header class="w-full flex justify-center leading-none pt-2">
@@ -616,7 +577,7 @@ document.addEventListener("DOMContentLoaded", () => {
        pointer-events: none;
        z-index: 9999;
      ">
-  v1.24
+  v1.25
 </div>
 <script>
 if ('serviceWorker' in navigator) {
