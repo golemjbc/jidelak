@@ -14,7 +14,6 @@
 =========================== */
 body {
   margin: 0;
-  min-height: 100vh;
   background: linear-gradient(
     120deg,
     #0f172a,
@@ -178,7 +177,7 @@ body {
 </style>
 </head>
 
-<body class="text-zinc-200">
+<body class="flex flex-col h-screen text-zinc-200 overflow-hidden">
 
 <!-- LOGO -->
 <header class="w-full flex justify-center leading-none">
@@ -193,8 +192,8 @@ body {
 
 <!-- CHAT -->
 <div id="chatSection"
-     class="flex-1 overflow-y-auto px-6 pt-0 pb-4 space-y-6 max-w-2xl mx-auto"
-     style="padding-bottom: 160px;">
+     class="flex-1 overflow-y-auto px-6 pt-4 space-y-6 max-w-2xl mx-auto"
+     style="padding-bottom: 140px;">
 </div>
 
 
@@ -574,7 +573,7 @@ document.addEventListener("DOMContentLoaded", () => {
        pointer-events: none;
        z-index: 9999;
      ">
-  v1.15
+  v1.16
 </div>
 
 </body>
