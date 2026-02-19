@@ -134,13 +134,14 @@ body {
    💎 FLOATING INPUT
 =========================== */
 .input-wrapper {
-  position: fixed;
-  bottom: 16px;
+  position: sticky;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 94%;
   max-width: 520px;
-
+  backdrop-filter: blur(12px);
+  
   display: flex;
   align-items: center;
   gap: 8px;
@@ -189,8 +190,7 @@ body {
 </style>
 </head>
 
-<body class="flex flex-col min-h-[100dvh] text-zinc-200 overflow-hidden">
-
+<body class="flex flex-col min-h-[100dvh] text-zinc-200">
 
 
 <!-- LOGO -->
@@ -206,8 +206,7 @@ body {
 
 <!-- CHAT -->
 <div id="chatSection"
-     class="flex-1 overflow-y-auto px-6 pt-4 space-y-6 max-w-2xl mx-auto"
-     style="padding-bottom: 140px;">
+     class="flex-1 overflow-y-auto px-6 pt-4 space-y-6 max-w-2xl mx-auto">
 </div>
 
 
@@ -596,7 +595,7 @@ document.addEventListener("DOMContentLoaded", () => {
        pointer-events: none;
        z-index: 9999;
      ">
-  v1.29
+  v1.30
 </div>
 <script>
 if ('serviceWorker' in navigator) {
