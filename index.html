@@ -132,25 +132,24 @@ body {
 =========================== */
 .input-wrapper {
   position: fixed;
-  bottom: 20px; /* o chlup níž, méně nalepené */
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
-  width: 92%;
+  width: 94%;
   max-width: 520px;
 
-  background: rgba(15, 15, 35, 0.85); /* tmavší, čitelné */
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 44px;
-
-  box-shadow:
-    0 20px 60px rgba(0,0,0,0.7),
-    0 0 40px rgba(139,92,246,0.18); /* jemný neon glow */
-
-  padding: 14px;
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
 
-  backdrop-filter: none; /* jistota */
+  background: rgba(20,20,35,0.85);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 40px;
+
+  padding: 6px 8px;
+  
+  box-shadow:
+    0 15px 40px rgba(0,0,0,0.6);
 }
 
 
@@ -205,17 +204,22 @@ body {
   <input id="messageInput"
          type="text"
          placeholder="Tak co mi dneska naservíruješ?"
-         class="flex-1 bg-transparent text-zinc-200 px-4 py-3 rounded-3xl focus:outline-none" />
+         class="flex-1 bg-transparent text-zinc-200 px-12 py-2 text-sm focus:outline-none" />
 
-  <button onclick="sendMessage()"
-          class="px-6 py-3 rounded-3xl 
-                 bg-gradient-to-br from-violet-500/80 to-indigo-500/80 
-                 text-white 
-                 shadow-lg 
-                 hover:scale-105 
-                 transition">
-    Odeslat
-  </button>
+    <button onclick="sendMessage()"
+            class="w-10 h-10 flex items-center justify-center rounded-full 
+                  bg-gradient-to-br from-violet-500 to-indigo-500 
+                  text-white shadow-md hover:scale-105 transition">
+
+      <svg xmlns="http://www.w3.org/2000/svg" 
+          class="w-4 h-4"
+          viewBox="0 0 24 24" 
+          fill="currentColor">
+        <path d="M3 20v-6l15-2-15-2V4l19 8-19 8z"/>
+      </svg>
+
+    </button>
+
 </div>
 
 <script>
@@ -570,7 +574,7 @@ document.addEventListener("DOMContentLoaded", () => {
        pointer-events: none;
        z-index: 9999;
      ">
-  v1.14
+  v1.15
 </div>
 
 </body>
