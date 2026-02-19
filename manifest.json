@@ -1,7 +1,8 @@
 {
   "name": "ELAI",
   "short_name": "ELAI",
-  "start_url": "/",
+  "start_url": "/jidelak/",
+  "scope": "/jidelak/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
