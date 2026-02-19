@@ -64,14 +64,17 @@ body {
 =========================== */
 .timeline-wrapper {
   position: relative;
-  height: 100px;
+  min-height: 100px; /* místo height */
   display: flex;
   align-items: center;
   overflow-x: auto;
   scroll-snap-type: x proximity;
-  padding: 0 40px;
-  gap: 8px;
+  padding: 0 24px; /* menší boční odsazení */
+  gap: 12px;
+
+  background: transparent;
 }
+
 
 .timeline-bubble {
   scroll-snap-align: center;
@@ -85,7 +88,7 @@ body {
   justify-content: center;
 
   backdrop-filter: blur(40px) saturate(180%);
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.15);
 
   box-shadow:
@@ -160,6 +163,17 @@ body {
   background: rgba(139,92,246,0.4);
   border-radius: 10px;
 }
+
+/* Hide horizontal scrollbar for timeline */
+.timeline-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.timeline-wrapper {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 
 </style>
 </head>
