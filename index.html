@@ -64,15 +64,16 @@ body {
 =========================== */
 .timeline-wrapper {
   position: relative;
-  /*min-height: 75px; /* místo height */
   display: flex;
   align-items: flex-start;
   overflow-x: auto;
+  overflow-y: visible;   /* 👈 důležité */
   scroll-snap-type: x proximity;
-  padding: 0 24px; /* 👈 horní posun */
+  padding: 0 24px;
   gap: 12px;
-  margin-top: 6px; /* 👈 jen jemný odstup */
+  margin-top: 6px;
 }
+
 
 
 .timeline-bubble {
@@ -567,7 +568,7 @@ document.addEventListener("DOMContentLoaded", () => {
        pointer-events: none;
        z-index: 9999;
      ">
-  v1.0.9
+  v1.10
 </div>
 
 </body>
