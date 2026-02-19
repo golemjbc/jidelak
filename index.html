@@ -177,11 +177,78 @@ body {
   scrollbar-width: none;
 }
 
+#splash {
+  position: fixed;
+  inset: 0;
+  background: #0a1045;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  overflow: hidden;
+  animation: splashFade 0.8s cubic-bezier(.4,0,.2,1) forwards;
+  animation-delay: 1.4s;
+}
+
+/* Glow layer */
+.splash-glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(
+    circle,
+    rgba(139,92,246,0.5) 0%,
+    rgba(139,92,246,0.25) 40%,
+    transparent 70%
+  );
+  filter: blur(40px);
+  animation: glowPulse 1.6s ease-in-out infinite alternate;
+}
+
+/* Logo */
+.splash-logo {
+  width: 140px;
+  position: relative;
+  animation: logoFloat 1.6s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+/* Animace */
+
+@keyframes logoFloat {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes glowPulse {
+  from { opacity: 0.6; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes splashFade {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 
 </style>
 </head>
 
 <body class="flex flex-col h-screen text-zinc-200 overflow-hidden">
+<div id="splash">
+  <div class="splash-glow"></div>
+  <img src="img/ELAI.png" class="splash-logo">
+</div>
 
 <!-- LOGO -->
 <header class="w-full flex justify-center leading-none pt-2">
@@ -577,7 +644,7 @@ document.addEventListener("DOMContentLoaded", () => {
        pointer-events: none;
        z-index: 9999;
      ">
-  v1.21
+  v1.22
 </div>
 <script>
 if ('serviceWorker' in navigator) {
